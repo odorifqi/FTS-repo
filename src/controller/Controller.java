@@ -328,7 +328,7 @@ public class Controller {
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
         String preOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + arrayPre.get(i).getTime() + "  |  " + decimalFormat.format(arrayPre.get(i).getPrePredicted()) + "  |  " + arrayPre.get(i).getAdjust();
+            preOut = preOut + "\n" + arrayPre.get(i).getTime() + "  |  " + decimalFormat.format(arrayPre.get(i).getPrePredicted()) + "  |  " + decimalFormat.format(arrayPre.get(i).getAdjust());
         }
         preOut = "\ntime | pre-predict | adjust" + preOut ;
         return preOut;
