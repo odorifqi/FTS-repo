@@ -1,3 +1,3 @@
 # FTS-repo
 
-my first ever "big" project
+my first "big" project
