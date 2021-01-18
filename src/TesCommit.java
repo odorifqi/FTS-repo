@@ -9,5 +9,9 @@
  * @author Odorifqi
  */
 public class TesCommit {
+
+    public TesCommit() {
+        System.out.println("this is the second attempt of commit");
+    }
     
 }
