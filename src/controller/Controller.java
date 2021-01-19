@@ -291,9 +291,9 @@ public class Controller {
     
     public String getInterval(){
         String intvlOut = "";
-        
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
         for (int i = 0; i < intvl; i++) {
-            intvlOut = intvlOut + "\n" + "A" + (i+1) + "  = [ " + intvlPart[i] + " - " + (intvlPart[i] + jumpVal) + " ]";
+            intvlOut = intvlOut + "\n" + "[ " + decimalFormat.format(intvlPart[i]) + " - " + decimalFormat.format(intvlPart[i] + jumpVal) + " ]";
         }
         
         return intvlOut;  
@@ -302,21 +302,25 @@ public class Controller {
     public String getFuzz(){
         String fuzzOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            fuzzOut = fuzzOut + "\n" + dataFuzzifikasi.get(i).getTime() + "  |  " + dataFuzzifikasi.get(i).getPrice()+ "  |  A" + dataFuzzifikasi.get(i).getIndex();
+            fuzzOut = fuzzOut + "\n" + "A" + dataFuzzifikasi.get(i).getIndex();
         }
-        fuzzOut = "\ntime | price | index" + fuzzOut ;
         return fuzzOut;
     }
     
     public String getMatrix(){
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
         String matrixOut = "";
         String temp = "";
         
         for (int i = 0; i < intvl; i++) {
             for (int j = 0; j < intvl; j++) {
-                temp = temp + " " + decimalFormat.format(matrix[i][j]);
+                String mat = decimalFormat.format(matrix[i][j]);
                 
+                if (matrix[i][j] == 0) {
+                    mat = "-" + (i+1) + "." + (j+1) + "-";
+                }
+                
+                temp = temp + " " + mat;
             }matrixOut = matrixOut + "\n" + temp;
             temp = "";
         }
@@ -328,9 +332,17 @@ public class Controller {
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
         String preOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + arrayPre.get(i).getTime() + "  |  " + decimalFormat.format(arrayPre.get(i).getPrePredicted()) + "  |  " + decimalFormat.format(arrayPre.get(i).getAdjust());
+            preOut = preOut + "\n" + decimalFormat.format(arrayPre.get(i).getPrePredicted());
         }
-        preOut = "\ntime | pre-predict | adjust" + preOut ;
+        return preOut;
+    }
+    
+    public String getAdjust(){
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
+        String preOut = "";
+        for (int i = 0; i < dataFuzzifikasi.size(); i++) {
+            preOut = preOut + "\n" + decimalFormat.format(arrayPre.get(i).getAdjust());
+        }
         return preOut;
     }
 }

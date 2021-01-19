@@ -48,7 +48,7 @@ public class TableModel extends AbstractTableModel{
                return dataModel.getPrice();
            }
            case 2-> {
-               DecimalFormat decimalFormat = new DecimalFormat("0.00");
+               DecimalFormat decimalFormat = new DecimalFormat("0.000");
                return decimalFormat.format(dataModel.getPredicted());
            }
        }

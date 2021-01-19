@@ -139,7 +139,9 @@ public class Home extends JFrame {
                                      "Interval: " + controller.getInterval() + "\n" + "\n" +
                                      "Fuzzifikasi: " + controller.getFuzz() + "\n" + "\n" +
                                      "Matrix: " + controller.getMatrix() + "\n" + "\n" +
-                                     "Adjusting: " + controller.getPreAdjust());
+                                     "pre Adjust: " + controller.getPreAdjust() + "\n" + "\n" +
+                                     "Adjust: " + controller.getAdjust()
+                        );
                 
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
