@@ -284,12 +284,12 @@ public class Controller {
     public String getMape(){
         double temp = 0;
         String mape;
-        
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
         for (int i = 0; i < listPredict.size(); i++) {
             temp+= (double) Math.abs((listRawChart.get(i) - listPredict.get(i))/listRawChart.get(i));
         }
         
-        mape = String.valueOf(temp/listPredict.size()*100);
+        mape = decimalFormat.format(temp/listPredict.size()*100);
         return mape;
     }
     
