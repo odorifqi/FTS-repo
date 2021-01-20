@@ -39,6 +39,7 @@ public class Controller {
     private List<DataModel> dataFuzzifikasi;
     private int[][] fuzzyLogRel;
     private double[][] matrix;
+    private double[] adj;
       
     public Controller(){}
     public List<Date> getListDateChart() {return listDateChart;}
@@ -220,22 +221,26 @@ public class Controller {
     }
     
     private double adjust(double temp, int i) {
+
         double dt1 = 0;
         double dt2 = (jumpVal/2)*(dataFuzzifikasi.get(i).getIndex() - dataFuzzifikasi.get(i-1).getIndex());
         if (dataFuzzifikasi.get(i).getIndex() != dataFuzzifikasi.get(i-1).getIndex()) {
             if (matrix[dataFuzzifikasi.get(i-1).getIndex()-1][dataFuzzifikasi.get(i-1).getIndex()-1]  > 0) {
                 dt1 = jumpVal/2;
             }
-            if (dataFuzzifikasi.get(i).getIndex() > dataFuzzifikasi.get(i-1).getIndex()) {  
-                temp = temp + dt1 + dt2;
-            }else{
-                temp = temp - dt1 + dt2;
-            }  
+            if (dataFuzzifikasi.get(i).getIndex() < dataFuzzifikasi.get(i-1).getIndex()) {  
+                dt1 = -(jumpVal/2);
+            }
+            temp = temp + dt1 + dt2;
+            
+            adj[i] = (dt1 + dt2);
         }
         return temp;
     }
     
     private void defuzzifikasi() {
+        adj = new double[dataFuzzifikasi.size()];
+        adj[0] = 0;
         double tempHasil = 0;
         double[] medianInterval = new double[intvl];
         
@@ -246,7 +251,7 @@ public class Controller {
         
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
             arrayData.add(i, new DataModel(listStringDate.get(i), listRaw.get(i), 0.0));
-            arrayPre.add(i, new DataModel(listRaw.get(i), listStringDate.get(i), 0.0, 0.0));
+            arrayPre.add(i, new DataModel(listRaw.get(i), listStringDate.get(i), 0.0));
             listPredict.add(i, 0.0);
         }
         
@@ -254,7 +259,7 @@ public class Controller {
             if (checkMatrix(dataFuzzifikasi.get(i-1).getIndex()) == true) {
                 tempHasil = medianInterval[dataFuzzifikasi.get(i).getIndex()-1];
                 arrayData.set(i, new DataModel(listStringDate.get(i), listRaw.get(i),tempHasil));
-                arrayPre.set(i, new DataModel(listRaw.get(i), listStringDate.get(i), tempHasil, 0));
+                arrayPre.set(i, new DataModel(listRaw.get(i), listStringDate.get(i), tempHasil));
                 listPredict.set(i, tempHasil);
                 tempHasil = 0;
             }
@@ -268,7 +273,7 @@ public class Controller {
                     }
                 }
                 arrayData.set(i, new DataModel(listStringDate.get(i), listRaw.get(i),adjust(center, i)));
-                arrayPre.set(i, new DataModel(listRaw.get(i), listStringDate.get(i), center, (adjust(center, i)-center)));
+                arrayPre.set(i, new DataModel(listRaw.get(i), listStringDate.get(i), center));
                 listPredict.set(i, adjust(center, i));
                 tempHasil = 0;
                 center = 0;
@@ -279,13 +284,13 @@ public class Controller {
     
     public String getMape(){
         double temp = 0;
-        String mape = "";
+        String mape;
+        
         for (int i = 0; i < listPredict.size(); i++) {
             temp+= (double) Math.abs((listRawChart.get(i) - listPredict.get(i))/listRawChart.get(i));
         }
         
-        NumberFormat parser = NumberFormat.getInstance();
-        mape = String.valueOf(parser.format(temp/listPredict.size()*100));
+        mape = String.valueOf(temp/listPredict.size()*100);
         return mape;
     }
     
@@ -329,19 +334,17 @@ public class Controller {
     }
     
     public String getPreAdjust(){
-        DecimalFormat decimalFormat = new DecimalFormat("0.000");
         String preOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + decimalFormat.format(arrayPre.get(i).getPrePredicted());
+            preOut = preOut + "\n" + arrayPre.get(i).getPrePredicted();
         }
         return preOut;
     }
     
     public String getAdjust(){
-        DecimalFormat decimalFormat = new DecimalFormat("0.000");
         String preOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + decimalFormat.format(arrayPre.get(i).getAdjust());
+            preOut = preOut + "\n" + adj[i];
         }
         return preOut;
     }

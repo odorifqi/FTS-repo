@@ -39,17 +39,17 @@ public class TableModel extends AbstractTableModel{
     @Override
     public Object getValueAt(int row, int col) {
         DataModel dataModel = list.get(row);
-         
+        DecimalFormat df = new DecimalFormat("0.00");
+        
         switch(col){
            case 0-> {
                return dataModel.getTime();
            }
            case 1-> {
-               return dataModel.getPrice();
+               return df.format(dataModel.getPrice());
            }
            case 2-> {
-               DecimalFormat decimalFormat = new DecimalFormat("0.000");
-               return decimalFormat.format(dataModel.getPredicted());
+               return df.format(dataModel.getPredicted());
            }
        }
         

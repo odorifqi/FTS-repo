@@ -16,7 +16,6 @@ public class DataModel implements Serializable {
     private String time;
     private double prePredicted;
     private double predicted;
-    private double adjust;
     private int index;
 
     public DataModel(String time, double price) {
@@ -24,11 +23,10 @@ public class DataModel implements Serializable {
         this.time = time;
     }
 
-    public DataModel(double price, String time, double prePredicted, double adjust) {
+    public DataModel(double price, String time, double prePredicted) {
         this.price = price;
         this.time = time;
         this.prePredicted = prePredicted;
-        this.adjust = adjust;
     }
     
     public DataModel(String time, double price, double predicted) {
@@ -48,6 +46,4 @@ public class DataModel implements Serializable {
     public double getPredicted() {return predicted;}
     public double getPrice() {return price;}
     public String getTime() {return time;}
-    public double getAdjust() {return adjust;}
-
 }
