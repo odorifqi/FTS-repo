@@ -1,3 +1,3 @@
 # FTS-repo
 
-my first "big" project
+project for undergraduate thesis
