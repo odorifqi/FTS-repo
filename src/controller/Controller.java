@@ -227,7 +227,7 @@ public class Controller {
             if (matrix[dataFuzzifikasi.get(i-1).getIndex()-1][dataFuzzifikasi.get(i-1).getIndex()-1]  > 0) {
                 dt1 = jumpVal/2;
             }
-            if (dataFuzzifikasi.get(i).getIndex() < dataFuzzifikasi.get(i-1).getIndex()) {  
+            if (dataFuzzifikasi.get(i).getIndex() < dataFuzzifikasi.get(i-1).getIndex() && matrix[dataFuzzifikasi.get(i-1).getIndex()-1][dataFuzzifikasi.get(i-1).getIndex()-1]  > 0) {  
                 dt1 = -(jumpVal/2);
             }
             temp = temp + dt1 + dt2;
@@ -306,7 +306,7 @@ public class Controller {
     public String getFuzz(){
         String fuzzOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            fuzzOut = fuzzOut + "\n" + "A" + dataFuzzifikasi.get(i).getIndex();
+            fuzzOut = fuzzOut + "\n" + (i+1) + ")  " + "A" + dataFuzzifikasi.get(i).getIndex();
         }
         return fuzzOut;
     }
@@ -335,7 +335,7 @@ public class Controller {
     public String getPreAdjust(){
         String preOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + arrayPre.get(i).getPrePredicted();
+            preOut =   preOut + "\n" +(i+1) + ") " + arrayPre.get(i).getPrePredicted();
         }
         return preOut;
     }
@@ -343,7 +343,7 @@ public class Controller {
     public String getAdjust(){
         String preOut = "";
         for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + adj[i];
+            preOut = preOut + "\n"  +(i+1) + ") " + adj[i];
         }
         return preOut;
     }
