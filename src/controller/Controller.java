@@ -352,14 +352,15 @@ public class Controller {
             } 
          
          for (int i = 1; i < 12; i++) {
+
                 if (temp[fuzLing-1] == 0) {
                     tempHasil = medianInterval[fuzLing-1];
                     list_12.add(i, new DataModel(0, tempHasil));
                     fuzLing = getFuzzy(tempHasil);
-                    tempHasil = 0;
-                 }
 
-                 if (checkMatrix(fuzLing) == true) {
+                    tempHasil = 0;
+                    
+                 }else  if (checkMatrix(fuzLing) == true) {
                     for (int j = 0; j < intvl; j++) {
                            if (matrix[fuzLing-1][j] == 1) {
                                 tempHasil = medianInterval[j];
@@ -368,10 +369,10 @@ public class Controller {
                
                     list_12.add(i, new DataModel(0, tempHasil));
                     fuzLing = getFuzzy(tempHasil);
+
                     tempHasil = 0;
-                }
-         
-            if (checkMatrix(fuzLing) == false && temp[fuzLing-1] != 0){
+
+                }else{
                    double center = matrix[fuzLing-1][fuzLing-1]*list_12.get(i-1).getPrice();
 
                    for (int j = 0; j < intvl; j++) {
@@ -383,17 +384,12 @@ public class Controller {
                    }
 
                    fuzLing = 0;
-
                     fuzLing = getFuzzy(center);
-
                    list_12.add(i, new DataModel(0, adjust(center, fuzLing)));
-
                    tempHasil = 0;
                    center = 0;
-
            }    
-        }  
-        
+        }
     }
     
     

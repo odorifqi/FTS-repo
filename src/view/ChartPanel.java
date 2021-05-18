@@ -35,7 +35,7 @@ public class ChartPanel extends JPanel {
     private XChartPanel<XYChart> chartBox;
 
     public ChartPanel() {
-        chart = new XYChartBuilder().width(400).height(250).title("Grafik").xAxisTitle("Time (Month)").yAxisTitle("Price ()").build();
+        chart = new XYChartBuilder().width(400).height(250).title("Grafik").xAxisTitle("Time (Month)").yAxisTitle("Price (Point)").build();
         chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.GREY));
         chart.getStyler().setPlotGridLinesColor(new Color(255, 255, 255));
         chart.getStyler().setChartBackgroundColor(Color.WHITE);
