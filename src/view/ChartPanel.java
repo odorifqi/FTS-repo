@@ -63,7 +63,7 @@ public class ChartPanel extends JPanel {
     }
     
     public XChartPanel<XYChart> EmptyChart(){
-        chart.setTitle("Grafik");
+        chart.setTitle("Defuzzy Chart");
         removeSeries();
         chart.getStyler().setAxisTicksVisible(false);
         chartBox = new XChartPanel<XYChart>(chart);
@@ -79,7 +79,7 @@ public class ChartPanel extends JPanel {
         chart.getStyler().setAxisTicksVisible(true);
         setLayout(new BorderLayout());
         chartBox = new XChartPanel<>(chart);
-        series1 = chart.addSeries("Raw Data", listDate, listDouble);
+        series1 = chart.addSeries("Actual Data", listDate, listDouble);
         setSeries1();
         add(chartBox, BorderLayout.CENTER);
             
@@ -94,8 +94,8 @@ public class ChartPanel extends JPanel {
         setLayout(new BorderLayout());
         chartBox = new XChartPanel<XYChart>(chart);
         
-        series1 = chart.addSeries("Raw Data", listDate, listDouble);
-        series2 = chart.addSeries("Prediction Data", listDate, listPredict);
+        series1 = chart.addSeries("Actual Data", listDate, listDouble);
+        series2 = chart.addSeries("Defuzzy Data", listDate, listPredict);
         
         setSeries1();
         series2.setLineColor(XChartSeriesColors.RED);
@@ -108,8 +108,8 @@ public class ChartPanel extends JPanel {
     }
     
     public void removeSeries(){
-        chart.removeSeries("Raw Data");
-        chart.removeSeries("Prediction Data");
+        chart.removeSeries("Actual Data");
+        chart.removeSeries("Defuzzy Data");
     }
     
     public void setSeries1(){

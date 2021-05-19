@@ -42,7 +42,7 @@ public class Home extends JFrame {
     private JTabbedPane tabPane;
     
     public Home(){
-        super("Fuzzy Time Series Ruey Chyn Tsaur");
+        super("Aplikasi Prediksi Fuzzy Time Series Ruey Chyn Tsaur");
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
         
@@ -134,7 +134,7 @@ public class Home extends JFrame {
                 
                 mapePanel.setText(controller.getMape());
                 
-                detailPanel.setText("Prediction Result: " + controller.get_12() + "\n" + "\n" +
+                detailPanel.setText("Prediction: || Actual: " + controller.get_12() + "\n" + "\n" +
                                      "Prediction MAPE (%) : "  + controller.getMape_12() + "\n" + "\n" 
                                      
                         );

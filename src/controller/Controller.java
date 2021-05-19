@@ -26,9 +26,10 @@ public class Controller {
     private ArrayList<DataModel> arrayData = new ArrayList<DataModel>();
     private ArrayList<DataModel> arrayPre = new ArrayList<DataModel>();
     private List<Date> listDateChart = new ArrayList<Date>();
+    private List<String> DateMape = new ArrayList<String>();
     private List<Double> raw_24 = new ArrayList<Double>();
     private List<Double> raw_12 = new ArrayList<Double>();
-        private List<Double> rawMape = new ArrayList<Double>();
+    private List<Double> rawMape = new ArrayList<Double>();
     private List<Double> listRawChart = new ArrayList<Double>();
     private List<Double> listPredict = new ArrayList<Double>();
     private List<Double> list_12 = new ArrayList<Double>();
@@ -50,7 +51,7 @@ public class Controller {
     public List<Date> getListDateChart() {return listDateChart;}
     public List<Double> getListRaw() {return raw_24;}
     public List<Double> getListRawChart() {return listRawChart;}
-    public List<Double> getListPredict() {return list_12;}
+    public List<Double> getListPredict() {return listPredict;}
     public ArrayList<DataModel> getDataTable(){return arrayData;}
     
     public void inputFile(File file) throws ParseException, IOException {
@@ -97,20 +98,22 @@ public class Controller {
         } br.close();
         
         for (int i = 0; i < 12; i++) {
+            DateMape.add(i, listStringDate.get(x-12));
             listStringDate.remove(x-12);
             raw_24.remove(x-12);
             rawMape.remove(x-12);
+            listDateChart.remove(x-12);
+            listRawChart.remove(x-12); 
+
         }
+            listDateChart.remove(0); 
+            listRawChart.remove(0);
 
         int y = x-12;
         for (int i = 0; i < y; i++) {
-                listDateChart.remove(0);
-                listRawChart.remove(0); 
-                raw_12.remove(0); 
-                
+                raw_12.remove(0);
                 arrayData.add(new DataModel(listStringDate.get(i), raw_24.get(i)));
         }
-
             rawMape.remove(0);
             
     }  
@@ -218,7 +221,6 @@ public class Controller {
                 }
                         return fuzLing;
     }
-    
     
     private List fuzzifikasi(){
         dataFuzzifikasi = new ArrayList<>();
@@ -332,6 +334,7 @@ public class Controller {
         listPredict.remove(0);
     }
     
+        //NEW
     public void predict_12(){
         list_12.clear();
         double tempHasil = 0;
@@ -372,11 +375,9 @@ public class Controller {
                 list_12.add(0,  adjust(center, fuzLing));
                 tempHasil = 0;
                 center = 0;
-                
             } 
          
          for (int i = 1; i < 12; i++) {
-
                 if (temp[fuzLing-1] == 0) {
                     tempHasil = medianInterval[fuzLing-1];
                     list_12.add(i, tempHasil);
@@ -407,15 +408,14 @@ public class Controller {
                        }
                    }
 
-                   fuzLing = 0;
-                    fuzLing = getFuzzy(center);
-                    list_12.add(i, adjust(center, fuzLing));
-                   tempHasil = 0;
-                   center = 0;
+                fuzLing = 0;
+                fuzLing = getFuzzy(center);
+                list_12.add(i, adjust(center, fuzLing));
+                tempHasil = 0;
+                center = 0;
            }    
         }
     }
-    
     
     public String getMape(){
         double temp = 0;
@@ -428,8 +428,9 @@ public class Controller {
         mape = decimalFormat.format(temp/listPredict.size()*100);
         return mape;
     }
-    
-        public String getMape_12(){
+       
+    //NEW
+    public String getMape_12(){
         double temp = 0;
         String mape;
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
@@ -441,16 +442,15 @@ public class Controller {
         return mape;
     }
     
-    
+        //NEW
     public String get_12(){
         String listOut = "";
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        
         for (int i = 0; i < 12; i++) {
-//            listOut = listOut + "\n" + (i+1) + ")  " + list_12.get(i);
-                        listOut = listOut + "\n" + list_12.get(i);
+                        listOut = listOut + "\n" + DateMape.get(i) + ") " + decimalFormat.format(list_12.get(i)) + " || " + raw_12.get(i);
         }
 
          return listOut;
     }
-    
-
 }
