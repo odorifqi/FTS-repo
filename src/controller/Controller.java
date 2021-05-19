@@ -26,12 +26,12 @@ public class Controller {
     private ArrayList<DataModel> arrayData = new ArrayList<DataModel>();
     private ArrayList<DataModel> arrayPre = new ArrayList<DataModel>();
     private List<Date> listDateChart = new ArrayList<Date>();
-    private List<Double> listRaw = new ArrayList<Double>();
+    private List<Double> raw_24 = new ArrayList<Double>();
+    private List<Double> raw_12 = new ArrayList<Double>();
+        private List<Double> rawMape = new ArrayList<Double>();
     private List<Double> listRawChart = new ArrayList<Double>();
     private List<Double> listPredict = new ArrayList<Double>();
-    
-    private ArrayList<DataModel> list_12 = new ArrayList<DataModel>();
-    
+    private List<Double> list_12 = new ArrayList<Double>();
     private List<String> listStringDate = new ArrayList<String>();
     private int intvl;
     private double maxVal;
@@ -48,21 +48,24 @@ public class Controller {
       
     public Controller(){}
     public List<Date> getListDateChart() {return listDateChart;}
-    public List<Double> getListRaw() {return listRaw;}
+    public List<Double> getListRaw() {return raw_24;}
     public List<Double> getListRawChart() {return listRawChart;}
-    public List<Double> getListPredict() {return listPredict;}
+    public List<Double> getListPredict() {return list_12;}
     public ArrayList<DataModel> getDataTable(){return arrayData;}
     
     public void inputFile(File file) throws ParseException, IOException {
         String line = "";
         String csvSplit = ";";
         int iter = 0;
+        int x = 0;
 
         arrayData.clear();
         arrayPre.clear();
         
         listDateChart.clear();
-        listRaw.clear();
+        raw_24.clear();
+        raw_12.clear();
+        rawMape.clear();
         listRawChart.clear();
         listPredict.clear();
         listStringDate.clear();
@@ -78,25 +81,46 @@ public class Controller {
                 
                 DateFormat parser = new SimpleDateFormat("MM/yy");
                 Date date = parser.parse(text[0]);
-                double tempInt = (double) Double.parseDouble(text[1]);  
-                
-                arrayData.add(new DataModel(text[0], tempInt));
+                double tempInt = (double) Double.parseDouble(text[1]);
+
                 listStringDate.add(text[0]);
-                listRaw.add(tempInt);
+                raw_24.add(tempInt);
+                raw_12.add(tempInt);
+                rawMape.add(tempInt);
                 listDateChart.add(date);
                 listRawChart.add(tempInt); 
+                x++;
             }  
-            listDateChart.remove(0); 
-            listRawChart.remove(0);
+
         } catch (IOException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         } br.close();
+        
+        for (int i = 0; i < 12; i++) {
+            listStringDate.remove(x-12);
+            raw_24.remove(x-12);
+            rawMape.remove(x-12);
+        }
+
+        int y = x-12;
+        for (int i = 0; i < y; i++) {
+                listDateChart.remove(0);
+                listRawChart.remove(0); 
+                raw_12.remove(0); 
+                
+                arrayData.add(new DataModel(listStringDate.get(i), raw_24.get(i)));
+        }
+
+            rawMape.remove(0);
+            
     }  
 
     public void prediksi(int interval){  
         this.intvl = interval;
         listPredict.clear();
         arrayPre.clear();
+        
+
         
         this.maxVal = getMaxValue();
         this.minVal = getMinValue();
@@ -113,9 +137,9 @@ public class Controller {
    
     public double getMaxValue(){
         double max = Integer.MIN_VALUE;
-        for (int i = 0; i < listRaw.size(); i++) {
-            if (listRaw.get(i) >= max) {
-                max = listRaw.get(i);
+        for (int i = 0; i < raw_24.size(); i++) {
+            if (raw_24.get(i) >= max) {
+                max = raw_24.get(i);
             }
         }
 
@@ -131,9 +155,9 @@ public class Controller {
     
     public double getMinValue(){
         double min = Integer.MAX_VALUE;
-        for (int i = 0; i < listRaw.size(); i++) {
-            if (listRaw.get(i) <= min) {
-                min = listRaw.get(i);
+        for (int i = 0; i < raw_24.size(); i++) {
+            if (raw_24.get(i) <= min) {
+                min = raw_24.get(i);
             }
         }
         
@@ -199,10 +223,10 @@ public class Controller {
     private List fuzzifikasi(){
         dataFuzzifikasi = new ArrayList<>();
         
-        for (int i = 0; i < listRaw.size(); i++) {
+        for (int i = 0; i < raw_24.size(); i++) {
             for (int j = 0; j < intvl; j++) {
-                if (listRaw.get(i) >= intvlPart[j] && listRaw.get(i) <= intvlPart[j] + jumpVal){
-                    dataFuzzifikasi.add(new DataModel(listStringDate.get(i), listRaw.get(i), j+1));
+                if (raw_24.get(i) >= intvlPart[j] && raw_24.get(i) <= intvlPart[j] + jumpVal){
+                    dataFuzzifikasi.add(new DataModel(listStringDate.get(i), raw_24.get(i), j+1));
                 }
             }
         }
@@ -276,15 +300,15 @@ public class Controller {
 
         listPredict.clear();
         
-            arrayData.add(0, new DataModel(listStringDate.get(0), listRaw.get(0), 0.0));
-            arrayPre.add(0, new DataModel(listRaw.get(0), listStringDate.get(0), 0.0));
+            arrayData.add(0, new DataModel(listStringDate.get(0), raw_24.get(0), 0.0));
+            arrayPre.add(0, new DataModel(raw_24.get(0), listStringDate.get(0), 0.0));
             listPredict.add(0, 0.0);
         
         for (int i = 1; i < dataFuzzifikasi.size(); i++) {
             if (checkMatrix(dataFuzzifikasi.get(i-1).getIndex()) == true) {
                 tempHasil = medianInterval[dataFuzzifikasi.get(i).getIndex()-1];
-                arrayData.add(i, new DataModel(listStringDate.get(i), listRaw.get(i),tempHasil));
-                arrayPre.add(i, new DataModel(listRaw.get(i), listStringDate.get(i), tempHasil));
+                arrayData.add(i, new DataModel(listStringDate.get(i), raw_24.get(i),tempHasil));
+                arrayPre.add(i, new DataModel(raw_24.get(i), listStringDate.get(i), tempHasil));
                 listPredict.add(i, tempHasil);
                 
                 tempHasil = 0;
@@ -298,8 +322,8 @@ public class Controller {
                         center += tempHasil;
                     }
                 }
-                arrayData.add(i, new DataModel(listStringDate.get(i), listRaw.get(i),adjust(center, i)));
-                arrayPre.add(i, new DataModel(listRaw.get(i), listStringDate.get(i), center));
+                arrayData.add(i, new DataModel(listStringDate.get(i), raw_24.get(i),adjust(center, i)));
+                arrayPre.add(i, new DataModel(raw_24.get(i), listStringDate.get(i), center));
                 listPredict.add(i, adjust(center, i));
                 tempHasil = 0;
                 center = 0;
@@ -309,13 +333,14 @@ public class Controller {
     }
     
     public void predict_12(){
+        list_12.clear();
         double tempHasil = 0;
         int fuzLing = 0;
         int index = dataFuzzifikasi.size()-1;
        
         if (temp[dataFuzzifikasi.get(index).getIndex()-1] == 0) {
             tempHasil = medianInterval[dataFuzzifikasi.get(index).getIndex()-1];
-            list_12.add(0, new DataModel(0, tempHasil));
+            list_12.add(0,  tempHasil);
             fuzLing = getFuzzy(tempHasil);
             tempHasil = 0;
         }
@@ -327,7 +352,7 @@ public class Controller {
                     }
                 }
                
-                list_12.add(0, new DataModel(0, tempHasil));
+                list_12.add(0,  tempHasil);
                 fuzLing = getFuzzy(tempHasil);
                 tempHasil = 0;
             }
@@ -344,8 +369,7 @@ public class Controller {
                 }
                 fuzLing = getFuzzy(center);
 
-                list_12.add(0, new DataModel(0, adjust(center, fuzLing)));
-                
+                list_12.add(0,  adjust(center, fuzLing));
                 tempHasil = 0;
                 center = 0;
                 
@@ -355,7 +379,7 @@ public class Controller {
 
                 if (temp[fuzLing-1] == 0) {
                     tempHasil = medianInterval[fuzLing-1];
-                    list_12.add(i, new DataModel(0, tempHasil));
+                    list_12.add(i, tempHasil);
                     fuzLing = getFuzzy(tempHasil);
 
                     tempHasil = 0;
@@ -367,13 +391,13 @@ public class Controller {
                            }
                        }
                
-                    list_12.add(i, new DataModel(0, tempHasil));
+                    list_12.add(i, tempHasil);
                     fuzLing = getFuzzy(tempHasil);
 
                     tempHasil = 0;
 
                 }else{
-                   double center = matrix[fuzLing-1][fuzLing-1]*list_12.get(i-1).getPrice();
+                   double center = matrix[fuzLing-1][fuzLing-1]*list_12.get(i-1);
 
                    for (int j = 0; j < intvl; j++) {
                        tempHasil = (matrix[fuzLing-1][j]*medianInterval[j]);
@@ -385,7 +409,7 @@ public class Controller {
 
                    fuzLing = 0;
                     fuzLing = getFuzzy(center);
-                   list_12.add(i, new DataModel(0, adjust(center, fuzLing)));
+                    list_12.add(i, adjust(center, fuzLing));
                    tempHasil = 0;
                    center = 0;
            }    
@@ -398,10 +422,22 @@ public class Controller {
         String mape;
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
         for (int i = 0; i < listPredict.size(); i++) {
-            temp+= (double) Math.abs((listRawChart.get(i) - listPredict.get(i))/listRawChart.get(i));
+            temp+= (double) Math.abs((rawMape.get(i) - listPredict.get(i))/rawMape.get(i));
         }
         
         mape = decimalFormat.format(temp/listPredict.size()*100);
+        return mape;
+    }
+    
+        public String getMape_12(){
+        double temp = 0;
+        String mape;
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
+        for (int i = 0; i < list_12.size(); i++) {
+            temp+= (double) Math.abs((raw_12.get(i) - list_12.get(i))/raw_12.get(i)) ;
+        }
+        
+        mape = decimalFormat.format(temp/list_12.size()*100);
         return mape;
     }
     
@@ -409,17 +445,12 @@ public class Controller {
     public String get_12(){
         String listOut = "";
         for (int i = 0; i < 12; i++) {
-            listOut = listOut + "\n" + (i+1) + ")  " + list_12.get(i).getPrice();
+//            listOut = listOut + "\n" + (i+1) + ")  " + list_12.get(i);
+                        listOut = listOut + "\n" + list_12.get(i);
         }
 
          return listOut;
     }
     
-    public String getAdjust(){
-        String preOut = "";
-        for (int i = 0; i < dataFuzzifikasi.size(); i++) {
-            preOut = preOut + "\n" + adj[i];
-        }
-        return preOut;
-    }
+
 }

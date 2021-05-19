@@ -108,7 +108,8 @@ public class Home extends JFrame {
                     predict.setEnabled(true);
                     detailPanel.setText(null);
                 } catch (ParseException | IOException | IndexOutOfBoundsException ex) {
-                   JOptionPane.showMessageDialog(this, "Can't input file", "error", JOptionPane.ERROR_MESSAGE);
+//                   JOptionPane.showMessageDialog(this, "Can't input file", "error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
                    reset();
                 }
             }
@@ -134,7 +135,7 @@ public class Home extends JFrame {
                 mapePanel.setText(controller.getMape());
                 
                 detailPanel.setText("Prediction Result: " + controller.get_12() + "\n" + "\n" +
-                                     "Prediction MAPE (%) : "  + "\n" + "\n" 
+                                     "Prediction MAPE (%) : "  + controller.getMape_12() + "\n" + "\n" 
                                      
                         );
                 
