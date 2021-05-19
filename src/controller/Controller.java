@@ -309,9 +309,9 @@ public class Controller {
         for (int i = 1; i < dataFuzzifikasi.size(); i++) {
             if (checkMatrix(dataFuzzifikasi.get(i-1).getIndex()) == true) {
                 tempHasil = medianInterval[dataFuzzifikasi.get(i).getIndex()-1];
-                arrayData.add(i, new DataModel(listStringDate.get(i), raw_24.get(i),tempHasil));
+                arrayData.add(i, new DataModel(listStringDate.get(i), raw_24.get(i),adjust(tempHasil, i)));
                 arrayPre.add(i, new DataModel(raw_24.get(i), listStringDate.get(i), tempHasil));
-                listPredict.add(i, tempHasil);
+                listPredict.add(i, adjust(tempHasil, i));
                 
                 tempHasil = 0;
             }
@@ -348,19 +348,20 @@ public class Controller {
             tempHasil = 0;
         }
 
-         if (checkMatrix(dataFuzzifikasi.get(index).getIndex()) == true) {
+       else  if (checkMatrix(dataFuzzifikasi.get(index).getIndex()) == true) {
              for (int j = 0; j < intvl; j++) {
                     if (matrix[dataFuzzifikasi.get(index).getIndex()-1][j] == 1) {
                          tempHasil = medianInterval[j];
                     }
                 }
+               fuzLing = getFuzzy(tempHasil);
+               double val = adjust(tempHasil, fuzLing);
                
-                list_12.add(0,  tempHasil);
-                fuzLing = getFuzzy(tempHasil);
+               fuzLing = getFuzzy(val);
+                list_12.add(0,  val);
+
                 tempHasil = 0;
-            }
-         
-         if (checkMatrix(dataFuzzifikasi.get(index).getIndex()) == false && temp[dataFuzzifikasi.get(index).getIndex()-1] != 0){
+        }else{
                 double center = matrix[dataFuzzifikasi.get(index).getIndex()-1][dataFuzzifikasi.get(index).getIndex()-1]*dataFuzzifikasi.get(index).getPrice();
                 
                 for (int j = 0; j < intvl; j++) {
@@ -370,9 +371,13 @@ public class Controller {
                         center += tempHasil;
                     }
                 }
+                
                 fuzLing = getFuzzy(center);
-
-                list_12.add(0,  adjust(center, fuzLing));
+                double val =  adjust(center, fuzLing);
+                fuzLing = getFuzzy(val);
+                
+                list_12.add(0,  val);
+                
                 tempHasil = 0;
                 center = 0;
             } 
@@ -391,9 +396,11 @@ public class Controller {
                                 tempHasil = medianInterval[j];
                            }
                        }
-               
-                    list_12.add(i, tempHasil);
                     fuzLing = getFuzzy(tempHasil);
+                     double val = adjust(tempHasil, fuzLing);
+                     fuzLing = getFuzzy(val);
+                
+                     list_12.add(i, val);
 
                     tempHasil = 0;
 
@@ -407,10 +414,12 @@ public class Controller {
                            center += tempHasil;
                        }
                    }
-
-                fuzLing = 0;
-                fuzLing = getFuzzy(center);
-                list_12.add(i, adjust(center, fuzLing));
+                   
+                 fuzLing = getFuzzy(center);
+                  double val =  adjust(center, fuzLing);
+                fuzLing = getFuzzy(val);
+                
+                list_12.add(i, val);
                 tempHasil = 0;
                 center = 0;
            }    

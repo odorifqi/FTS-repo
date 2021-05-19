@@ -133,7 +133,8 @@ public class Home extends JFrame {
                 
                 mapePanel.setText(controller.getMape());
                 
-                detailPanel.setText("Prediction: || Actual: " + controller.get_12() + "\n" + "\n" +
+                detailPanel.setText("Interval: " + interval + "\n" + "\n" +
+                        "Prediction: || Actual: " + controller.get_12() + "\n" + "\n" +
                                      "Prediction MAPE (%) : "  + controller.getMape_12() + "\n" + "\n" 
                                      
                         );
