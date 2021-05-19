@@ -108,8 +108,7 @@ public class Home extends JFrame {
                     predict.setEnabled(true);
                     detailPanel.setText(null);
                 } catch (ParseException | IOException | IndexOutOfBoundsException ex) {
-//                   JOptionPane.showMessageDialog(this, "Can't input file", "error", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
+                   JOptionPane.showMessageDialog(this, "Can't input file", "error", JOptionPane.ERROR_MESSAGE);
                    reset();
                 }
             }
