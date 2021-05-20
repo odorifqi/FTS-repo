@@ -53,7 +53,7 @@ public class Home extends JFrame {
         tabPane.addTab("Chart", chartPanel);
 	tabPane.addTab("Prediction", detailPanel);
         
-        tablePanel.setData(controller.getDataTable());
+        tablePanel.setData(controller.getTableData());
         
         Insets inset = new Insets(5, 5, 5, 5);
         gc.gridx = 0;
@@ -100,7 +100,7 @@ public class Home extends JFrame {
                     controller.inputFile(fileChooser.getSelectedFile()); 
                     tablePanel.refresh();
                     chartPanel.removeAll();
-                    chartPanel.add(cp.RawChart(controller.getListDateChart(), controller.getListRawChart(), fileChooser.getSelectedFile()));
+                    chartPanel.add(cp.RawChart(controller.getListDateChart(), controller.getListActualChart(), fileChooser.getSelectedFile()));
                     chartPanel.validate();  
                     
                     mapePanel.setText("");
@@ -128,7 +128,7 @@ public class Home extends JFrame {
                 tablePanel.refresh();
 
                 chartPanel.removeAll();
-                chartPanel.add(cp.PredictChart(controller.getListDateChart(), controller.getListRawChart(), controller.getListPredict(), interval));
+                chartPanel.add(cp.PredictChart(controller.getListDateChart(), controller.getListActualChart(), controller.getListDefuzzy(), interval));
                 chartPanel.validate();
                 
                 mapePanel.setText(controller.getMape());
