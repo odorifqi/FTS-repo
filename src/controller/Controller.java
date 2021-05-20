@@ -30,13 +30,12 @@ public class Controller {
     private List<Double> listActual = new ArrayList<Double>();
     private List<Double> listDefuzzy = new ArrayList<Double>();
     private List<Double> listPredict = new ArrayList<Double>();
-
+    private List<DataModel> listFuzzify;
     private int intvl;
     private double maxVal;
     private double minVal;
     private double jumpVal;
     private double[] intvlPart;
-    private List<DataModel> listFuzzify;
     private int[][] flr;
     private double[][] matrix;
     private double[] temp;
