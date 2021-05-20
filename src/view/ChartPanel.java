@@ -86,7 +86,7 @@ public class ChartPanel extends JPanel {
         return chartBox;
     }
     
-    public XChartPanel<XYChart> PredictChart(List<Date> listDate, List<Double> listDouble, List<Double> listPredict, int interval){
+    public XChartPanel<XYChart> DefuzzyChart(List<Date> listDate, List<Double> listDouble, List<Double> listPredict, int interval){
         chart.setTitle("Interval: " + interval);
         removeSeries();
         chart.getStyler().setAxisTicksVisible(true);

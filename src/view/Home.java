@@ -128,7 +128,7 @@ public class Home extends JFrame {
                 tablePanel.refresh();
 
                 chartPanel.removeAll();
-                chartPanel.add(cp.PredictChart(controller.getListDateChart(), controller.getListActualChart(), controller.getListDefuzzy(), interval));
+                chartPanel.add(cp.DefuzzyChart(controller.getListDateChart(), controller.getListActualChart(), controller.getListDefuzzy(), interval));
                 chartPanel.validate();
                 
                 mapePanel.setText(controller.getMape());
