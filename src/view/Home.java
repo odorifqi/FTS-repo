@@ -131,11 +131,11 @@ public class Home extends JFrame {
                 chartPanel.add(cp.DefuzzyChart(controller.getListDateChart(), controller.getListActualChart(), controller.getListDefuzzy(), interval));
                 chartPanel.validate();
                 
-                mapePanel.setText(controller.getMape());
+                mapePanel.setText(controller.mapeDefuzzy());
                 
                 detailPanel.setText("Interval: " + interval + "\n" + "\n" +
-                        "Prediction: || Actual: " + controller.get_12() + "\n" + "\n" +
-                                     "Prediction MAPE (%) : "  + controller.getMape_12() + "\n" + "\n" 
+                        "Prediction: || Actual: " + controller.getPredict() + "\n" + "\n" +
+                                     "Prediction MAPE (%) : "  + controller.mapePredict() + "\n" + "\n" 
                                      
                         );
                 
