@@ -221,19 +221,21 @@ public class Controller {
     
     private double adjust(double temp, int i) {
 
-        double dt1 = 0;
+         double dt1 = 0;
         double dt2 = (jumpVal/2)*(dataFuzzifikasi.get(i).getIndex() - dataFuzzifikasi.get(i-1).getIndex());
-        if (dataFuzzifikasi.get(i).getIndex() != dataFuzzifikasi.get(i-1).getIndex()) {
-            if (matrix[dataFuzzifikasi.get(i-1).getIndex()-1][dataFuzzifikasi.get(i-1).getIndex()-1]  > 0) {
+        
+         if (dataFuzzifikasi.get(i).getIndex() != dataFuzzifikasi.get(i-1).getIndex() && matrix[dataFuzzifikasi.get(i-1).getIndex()-1][dataFuzzifikasi.get(i-1).getIndex()-1]  > 0) {
+            if (dataFuzzifikasi.get(i).getIndex() > dataFuzzifikasi.get(i-1).getIndex()) {
                 dt1 = jumpVal/2;
             }
-            if (dataFuzzifikasi.get(i).getIndex() < dataFuzzifikasi.get(i-1).getIndex() && matrix[dataFuzzifikasi.get(i-1).getIndex()-1][dataFuzzifikasi.get(i-1).getIndex()-1]  > 0) {  
+           else {  
                 dt1 = -(jumpVal/2);
             }
-            temp = temp + dt1 + dt2;
             
-            adj[i] = (dt1 + dt2);
         }
+         adj[i] = (dt1 + dt2);
+        temp = temp + dt1 + dt2;
+        
         return temp;
     }
     
@@ -257,9 +259,9 @@ public class Controller {
         for (int i = 1; i < dataFuzzifikasi.size(); i++) {
             if (checkMatrix(dataFuzzifikasi.get(i-1).getIndex()) == true) {
                 tempHasil = medianInterval[dataFuzzifikasi.get(i).getIndex()-1];
-                arrayData.set(i, new DataModel(listStringDate.get(i), listRaw.get(i),tempHasil));
+                arrayData.set(i, new DataModel(listStringDate.get(i), listRaw.get(i),adjust(tempHasil, i)));
                 arrayPre.set(i, new DataModel(listRaw.get(i), listStringDate.get(i), tempHasil));
-                listPredict.set(i, tempHasil);
+                listPredict.set(i, adjust(tempHasil, i));
                 tempHasil = 0;
             }
             else{
