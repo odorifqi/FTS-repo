@@ -265,20 +265,18 @@ public class Controller {
     
     private double adjust(double temp, int i) {
         double dt1 = 0;
+        double dt2 = (jumpVal/2)*(listFuzzify.get(i) - listFuzzify.get(i-1));
 
-        if (i >0 ) {
-            if (listFuzzify.get(i) != listFuzzify.get(i-1) && matrix[listFuzzify.get(i-1)-1][listFuzzify.get(i-1)-1]  > 0) {
-            double dt2 = (jumpVal/2)*(listFuzzify.get(i) - listFuzzify.get(i-1));
-           
-            if (listFuzzify.get(i) > listFuzzify.get(i-1)) {
-                dt1 = jumpVal/2;
+            if (matrix[listFuzzify.get(i-1)-1][listFuzzify.get(i-1)-1]  > 0 && listFuzzify.get(i) != listFuzzify.get(i-1)) {
+                if (listFuzzify.get(i) > listFuzzify.get(i-1)) {
+                    dt1 = jumpVal/2;
+                }
+               else {  
+                    dt1 = -(jumpVal/2);
+                }
             }
-           else {  
-                dt1 = -(jumpVal/2);
-            }
+
             temp = temp + dt1 + dt2;
-            }
-        }
         return temp;
     }
     
@@ -286,6 +284,7 @@ public class Controller {
         double dt1 = 0;
         double dt2 = (jumpVal/2)*(i - listFuzzify.get(listFuzzify.size()-1));
         int x = listFuzzify.size()-1;
+       
         if (i != listFuzzify.get(x) && matrix[listFuzzify.get(x)-1][listFuzzify.get(x)-1]  > 0) {
             if (i > listFuzzify.get(x)) {
                 dt1 = jumpVal/2;
@@ -311,7 +310,6 @@ public class Controller {
                 tempHasil = medianIntvl[listFuzzify.get(i)-1];
                 TableData.add(i, new DataModel(listDate.get(i), listWorking.get(i), tempHasil));
                 listDefuzzy.add(i, tempHasil);
-                
                 tempHasil = 0;
             }
             else{
@@ -336,19 +334,18 @@ public class Controller {
         list_12.clear();
         double tempHasil = 0;
         double center = 0;
-        int size = listFuzzify.size();
-        int fuzLing = listFuzzify.get(size-1);
-        
+
         for (int i = 0; i < 12; i++) {
-            if (temp[fuzLing-1] == 0){
-                tempHasil = medianIntvl[fuzLing-1];
+            
+            if (temp[listFuzzify.get( listFuzzify.size()-1)-1] == 0){
+                tempHasil = medianIntvl[listFuzzify.get( listFuzzify.size()-1)-1];
 
                 list_12.add(i, tempHasil);
                 listWorking.add(tempHasil);
                 listFuzzify.add(getFuzzy(tempHasil));   
-            }else  if (checkMatrix(fuzLing) == true){
+            }else  if (checkMatrix(listFuzzify.get( listFuzzify.size()-1)) == true){
                 for (int j = 0; j < intvl; j++) {
-                    if (matrix[fuzLing-1][j] == 1) {
+                    if (matrix[listFuzzify.get( listFuzzify.size()-1)-1][j] == 1) {
                         tempHasil = medianIntvl[j];
                     }
                 }
@@ -357,39 +354,51 @@ public class Controller {
                 listWorking.add(tempHasil);
                 listFuzzify.add(getFuzzy(tempHasil)); 
             }else{
-                center = matrix[fuzLing-1][fuzLing-1]*listWorking.get(size-1);
+                center = matrix[listFuzzify.get( listFuzzify.size()-1)-1][listFuzzify.get( listFuzzify.size()-1)-1]*listWorking.get(listWorking.size()-1);
 
                 for (int j = 0; j < intvl; j++) {
-                    tempHasil = (matrix[fuzLing-1][j]*medianIntvl[j]);
+                    tempHasil = (matrix[listFuzzify.get( listFuzzify.size()-1)-1][j]*medianIntvl[j]);
 
-                    if (fuzLing-1 != j && tempHasil != 0) {
+                    if (listFuzzify.get( listFuzzify.size()-1)-1 != j && tempHasil != 0) {
                         center += tempHasil;
                     }
                  }
-                 double val =  adjust(center, getFuzzy(center));
-                 list_12.add(i, val);
-                 listWorking.add(val);
-                 listFuzzify.add(getFuzzy(val));                 
+
+                double val =  adjust_12(center, getFuzzy(center));
+                
+                if (center > maxVal || center < minVal) {
+                    listFuzzify.clear();
+                    listWorking.add(listWorking.size(), val);
+                    this.maxVal = getMaxValue();
+                    this.minVal = getMinValue();
+                    this.jumpVal = getLompatan();
+                    this.intvlPart = intervalPartition();
+                    this.medianIntvl = getMedianInterval();
+                    this.listFuzzify = fuzzifikasi();
+                    
+                    this.flr = fuzzyLogRel();
+                    this.matrix = matrixProb();
+
+                    listWorking.remove(listWorking.size()-1);
+                    val =  adjust_12(center, listFuzzify.get( listFuzzify.size()-1));
+                 }
+                
+                     list_12.add(i, val);
+                     listWorking.add(val);
+                     listFuzzify.add(getFuzzy(val));
             }    
-           
+            
             tempHasil = 0;
             center = 0;
-            size = listFuzzify.size();
-            fuzLing = listFuzzify.get(size-1);
+            flr[listFuzzify.get( listFuzzify.size()-2) - 1][ listFuzzify.get( listFuzzify.size()-1) - 1]= 
+                    flr[listFuzzify.get( listFuzzify.size()-2) - 1][ listFuzzify.get(listFuzzify.size()-1) - 1] + 1;
             
-            if (listWorking.get(size-1) > maxVal || listWorking.get(size-1) < minVal) {
-                listFuzzify.clear();
-                this.maxVal = getMaxValue();
-                this.minVal = getMinValue();
-                this.jumpVal = getLompatan();
-                this.intvlPart = intervalPartition();
-                this.medianIntvl = getMedianInterval();
-                this.listFuzzify = fuzzifikasi();
-                fuzLing = listFuzzify.get(size-1);
-             }
-                    
-            this.flr = fuzzyLogRel();
-            this.matrix = matrixProb();
+            temp[listFuzzify.get( listFuzzify.size()-2) - 1] += 1;
+               
+            for (int j = 0; j < intvl; j++) {
+                    matrix[listFuzzify.get( listFuzzify.size()-2) - 1][j] = 
+                            flr[listFuzzify.get( listFuzzify.size()-2) - 1][j]/temp[listFuzzify.get( listFuzzify.size()-2) - 1]; 
+            }
         }
     }
     
