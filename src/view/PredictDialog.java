@@ -29,39 +29,33 @@ import javax.swing.border.Border;
  * @author Odorifqi
  */
 public class PredictDialog extends JDialog {
-    private JRadioButton int5, int10, int15, int20;
+    private JRadioButton dbl, abl, int15, int20;
     private ButtonGroup intervalBG;
     private JButton okButton, cancelButton;
     
-    private int interval;
+    private String choice;
     
     public PredictDialog(JFrame parent) {
         super(parent, "Set interval", true);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         
-        int5 = new JRadioButton("5");
-        int10 = new JRadioButton("10");
-        int15 = new JRadioButton("15");
-        int20 = new JRadioButton("20");
+        dbl = new JRadioButton("Distribution-Based");
+        abl = new JRadioButton("Average-Based");
         intervalBG = new ButtonGroup();
         okButton = new JButton("Ok");
         cancelButton = new JButton("Cancel");
         
-        int5.setActionCommand("5");
-        int10.setActionCommand("10");
-        int15.setActionCommand("15");
-        int20.setActionCommand("20");
+        dbl.setActionCommand("Distribution-Based");
+        abl.setActionCommand("Average-Based");
         
-        intervalBG.add(int5);
-        intervalBG.add(int10);
-        intervalBG.add(int15);
-        intervalBG.add(int20);
-        int10.setSelected(true);
+        intervalBG.add(dbl);
+        intervalBG.add(abl);
+        abl.setSelected(true);
         
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                interval = Integer.parseInt(intervalBG.getSelection().getActionCommand());          
+                choice = intervalBG.getSelection().getActionCommand();          
                 setVisible(false);
             }
         });
@@ -84,7 +78,7 @@ public class PredictDialog extends JDialog {
         JPanel buttonsPanel = new JPanel();
         
         int x = 15;
-        Border title = BorderFactory.createTitledBorder("Prediksi");
+        Border title = BorderFactory.createTitledBorder("Choose Interval method");
         Border space = BorderFactory.createEmptyBorder(x,x,x,x);
         
         controlsPanel.setBorder(BorderFactory.createCompoundBorder(space, title));
@@ -93,15 +87,6 @@ public class PredictDialog extends JDialog {
         GridBagConstraints gc = new GridBagConstraints();
         
         Insets right = new Insets(0, 0, 0, 15);
-        
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.weightx = 1;
-        gc.weighty = 1;
-        gc.fill = GridBagConstraints.NONE;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = right;
-        controlsPanel.add(new JLabel("Set Interval"), gc);
        
         gc.gridx = 0;
         gc.gridy++;
@@ -110,7 +95,7 @@ public class PredictDialog extends JDialog {
         gc.fill = GridBagConstraints.NONE;
         gc.anchor = GridBagConstraints.CENTER;
         gc.insets = right;
-        controlsPanel.add(int5);
+        controlsPanel.add(dbl);
         
         gc.gridx++;
         gc.weightx = 1;
@@ -118,23 +103,7 @@ public class PredictDialog extends JDialog {
         gc.fill = GridBagConstraints.NONE;
         gc.anchor = GridBagConstraints.CENTER;
         gc.insets = right;
-        controlsPanel.add(int10);
-        
-        gc.gridx++;
-        gc.weightx = 1;
-        gc.weighty = 1;
-        gc.fill = GridBagConstraints.NONE;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = right;
-        controlsPanel.add(int15);
-        
-        gc.gridx++;
-        gc.weightx = 1;
-        gc.weighty = 1;
-        gc.fill = GridBagConstraints.NONE;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.insets = right;
-        controlsPanel.add(int20);
+        controlsPanel.add(abl);
         
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         
@@ -149,7 +118,7 @@ public class PredictDialog extends JDialog {
         add(buttonsPanel, BorderLayout.SOUTH);
     }
 
-    public int getInterval(){
-        return interval;
+    public String getInterval(){
+        return choice;
     }
 }

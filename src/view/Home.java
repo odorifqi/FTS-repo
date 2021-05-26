@@ -39,6 +39,7 @@ public class Home extends JFrame {
     private JButton input, predict, reset;
     private JFileChooser fileChooser;
     private DetailPanel detailPanel = new DetailPanel();
+    private PredictPanel predictPanel = new PredictPanel();
     private JTabbedPane tabPane;
     
     public Home(){
@@ -51,7 +52,8 @@ public class Home extends JFrame {
         
         tabPane = new JTabbedPane();
         tabPane.addTab("Chart", chartPanel);
-	tabPane.addTab("Prediction", detailPanel);
+        tabPane.addTab("Prediction", predictPanel);
+        tabPane.addTab("Detail", detailPanel);
         
         tablePanel.setData(controller.getTableData());
         
@@ -107,6 +109,7 @@ public class Home extends JFrame {
                     
                     predict.setEnabled(true);
                     detailPanel.setText(null);
+                    predictPanel.setText(null);
                 } catch (ParseException | IOException | IndexOutOfBoundsException ex) {
                    JOptionPane.showMessageDialog(this, "Can't input file", "error", JOptionPane.ERROR_MESSAGE);
                    reset();
@@ -117,24 +120,32 @@ public class Home extends JFrame {
         predict.addActionListener((ActionEvent e) -> {
             predictDialog = new PredictDialog(this);
             predictDialog.setVisible(true);
-            int interval = predictDialog.getInterval();
+            String choice = predictDialog.getInterval();
             predictDialog.dispose();
 
-            if(interval != 0){
+            if(choice != null){
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 tablePanel.resetData();
-                controller.prediksi(interval);
+                controller.prediksi(choice);
                 
                 tablePanel.refresh();
 
                 chartPanel.removeAll();
-                chartPanel.add(cp.DefuzzyChart(controller.getListDateChart(), controller.getListActualChart(), controller.getListDefuzzy(), interval));
+                chartPanel.add(cp.DefuzzyChart(controller.getListDateChart(), controller.getListActualChart(), controller.getListDefuzzy(), fileChooser.getSelectedFile()));
                 chartPanel.validate();
                 
                 mapePanel.setText(controller.mapeDefuzzy());
                 
-                detailPanel.setText("Interval: " + interval + "\n" + "\n" +
-                        "Prediction: || Actual: " + controller.getPredict() + "\n" + "\n"             
+                predictPanel.setText(
+                        "Prediction result: " + controller.getPredict() + "\n" + "\n"             
+                        );
+                
+                detailPanel.setText("Interval length method: " + choice + "\n" + "\n" +
+                        "Max Value: " + Double.toString(controller.getMaxValue()) + "\n" + "\n" +
+                                     "Min Value: " + Double.toString(controller.getMinValue()) + "\n" + "\n" +
+                                     "Interval length: " + Integer.toString(controller.getLength()) + "\n" + "\n" +
+                                             "Interval: " + controller.getInterval() + "\n" + "\n" +
+                                     "Interval Partition: " + controller.getIntervalPart() + "\n" + "\n" 
                         );
                 
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -165,6 +176,7 @@ public class Home extends JFrame {
         tablePanel.refresh();
         
         detailPanel.setText(null);
+        predictPanel.setText(null);
         
         predict.setEnabled(false);
         System.gc();

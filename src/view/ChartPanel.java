@@ -35,7 +35,7 @@ public class ChartPanel extends JPanel {
     private XChartPanel<XYChart> chartBox;
 
     public ChartPanel() {
-        chart = new XYChartBuilder().width(400).height(250).title("Grafik").xAxisTitle("Time (Month)").yAxisTitle("Price (Point)").build();
+        chart = new XYChartBuilder().width(400).height(250).title("Line Chart").xAxisTitle("Time (Month)").yAxisTitle("Price (Point)").build();
         chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.GREY));
         chart.getStyler().setPlotGridLinesColor(new Color(255, 255, 255));
         chart.getStyler().setChartBackgroundColor(Color.WHITE);
@@ -86,8 +86,8 @@ public class ChartPanel extends JPanel {
         return chartBox;
     }
     
-    public XChartPanel<XYChart> DefuzzyChart(List<Date> listDate, List<Double> listDouble, List<Double> listPredict, int interval){
-        chart.setTitle("Interval: " + interval);
+    public XChartPanel<XYChart> DefuzzyChart(List<Date> listDate, List<Double> listDouble, List<Double> listPredict, File file){
+        chart.setTitle("" + file);
         removeSeries();
         chart.getStyler().setAxisTicksVisible(true);
         

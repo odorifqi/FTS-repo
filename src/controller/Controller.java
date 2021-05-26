@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,21 +33,29 @@ public class Controller {
     private List<Double> list_12 = new ArrayList<Double>();
     private List<Double> listWorking = new ArrayList<Double>();
     private List<Integer> listFuzzify = new ArrayList<Integer>();
+    
+    private List<Double> listDif = new ArrayList<Double>();
     private int intvl;
     private double maxVal;
     private double minVal;
-    private double jumpVal;
+    private int length;
     private double[] intvlPart;
     private int[][] flr;
     private double[][] matrix;
     private double[] temp;
     private double[] medianIntvl;
+    private Double base;
+    
+    private int choice;
       
     public Controller(){}
     public List<Date> getListDateChart() {return listDateChart;}
     public List<Double> getListActualChart() {return listActualChart;}
     public List<Double> getListDefuzzy() {return listDefuzzy;}
     public ArrayList<DataModel> getTableData(){return TableData;}
+    public int getLength(){
+        return length;
+    }
     
     public void inputFile(File file) throws ParseException, IOException {
         String line = "";
@@ -97,19 +106,27 @@ public class Controller {
         }
     }  
 
-    public void prediksi(int interval){  
-        this.intvl = interval;
+    public void prediksi(String choice){  
+//        this.intvl = interval;
         listDefuzzy.clear();
         listFuzzify.clear();
         listWorking.clear();
+        listDif.clear();
         
         for (int i = 0; i < listActual.size(); i++) {
              listWorking.add(listActual.get(i));
         }
         
+        if (!choice.equals("Distribution-Based")) {
+            this.length = length_abl();
+        }else{
+            this.length = length_dbl();
+            this.choice = 1;
+        }
+        
         this.maxVal = getMaxValue();
         this.minVal = getMinValue();
-        this.jumpVal = getLompatan();
+        this.intvl = getInterval();
         this.intvlPart = intervalPartition();
         this.medianIntvl = getMedianInterval();
         
@@ -118,6 +135,82 @@ public class Controller {
         this.matrix = matrixProb();
         defuzzifikasi();  
         predict_12();
+    }
+    
+    public int length_dbl(){
+        Double totalDif = 0.0;
+        Double base = 0.0;
+        
+        for (int i = 1; i < listActual.size(); i++) {
+            Double dif = Math.abs(listActual.get(i) - listActual.get(i-1));
+            listDif.add(dif);
+            totalDif += dif;
+        }
+        Double avg = totalDif/listDif.size();
+        
+        if (avg > 0.1 && avg <= 1.5) {
+            base = 0.1;
+        }
+        else if (avg > 1.5 && avg <= 10.5) {
+            base = 1.0;
+        }
+        else if (avg > 10.5 && avg <= 100.5) {
+            base = 10.0;
+        }
+        else if (avg > 100.5 && avg <= 1000.5) {
+            base = 100.0;
+        }
+        else{
+            base = 1000.0;
+        }
+        
+        this.base = base;
+        int baseDist = (int) (base*10);
+        int count = 0;
+        do {            
+            
+            baseDist -= base;
+            for (int i = 0; i < listDif.size(); i++) {
+                if (baseDist < listDif.get(i)) {
+                    count++;
+                }
+            }
+        } while (count < (listDif.size()/2));
+        
+//        length = baseDist;
+        return baseDist;
+    }
+    
+    public int length_abl(){
+        Double totalDif = 0.0;
+        Double base = 0.0;
+        
+        for (int i = 1; i < listActual.size(); i++) {
+            Double dif = Math.abs(listActual.get(i) - listActual.get(i-1));
+            listDif.add(dif);
+            totalDif += dif;
+        }
+        Double avg = totalDif/listDif.size();
+        avg = avg/2;
+        
+        if (avg > 0.1 && avg <= 1.5) {
+            base = 0.1;
+        }
+        else if (avg > 1.5 && avg <= 10.5) {
+            base = 1.0;
+        }
+        else if (avg > 10.5 && avg <= 100.5) {
+            base = 10.0;
+        }
+        else if (avg > 100.5 && avg <= 1000.5) {
+            base = 100.0;
+        }
+        else{
+            base = 1000.0;
+        }
+        this.base = base;
+        //        length = baseDist;
+        return (int) (Math.round(avg/base)*base);
     }
    
     public double getMaxValue(){
@@ -128,12 +221,8 @@ public class Controller {
             }
         }
 
-        double rem = max%25;
-        if (rem < 12.5 || rem > 12.5) {
-            maxVal = max + (25 - (rem));
-         }else{
-             maxVal = max + 12.5;
-        }
+        double rem = max%base;
+            maxVal = max + (base - (rem));
             
         return maxVal;
     }
@@ -145,30 +234,27 @@ public class Controller {
                 min = listWorking.get(i);
             }
         }
-        
-        if (intvl == 20) {
-            double rem = min%50;
-            if (rem < 25 || rem > 25) {
-                minVal = min - rem;
-            }else{
-                minVal = min - 25;
-            }
-        }else{
-            double rem = min%25; 
-           if (rem < 12.5 || rem > 12.5) {
-               minVal = min - rem;
-            }else{
-               minVal = min - 12.5;
-           }
-        }
-        
+            double rem = min%base;
+            minVal = min - rem;
+                
         return minVal;
     }
     
-    public double getLompatan(){
-        jumpVal = (maxVal - minVal)/intvl;
+    public int getInterval(){
+        Double tempIntvl = (maxVal - minVal)/length;
+//        this.intvl = (int) Math.ceil(tempIntvl);
         
-        return jumpVal;
+        return (int) Math.ceil(tempIntvl) ;
+    }
+    
+    public String getIntervalPart(){
+        String intvlOut = "";
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
+        for (int i = 0; i < intvl; i++) {
+            intvlOut = intvlOut + "\n" + "[ " + decimalFormat.format(intvlPart[i]) + " - " + decimalFormat.format(intvlPart[i] + length) + " ]";
+        }
+        
+        return intvlOut;  
     }
     
     private double[] intervalPartition(){
@@ -176,7 +262,7 @@ public class Controller {
         intvlPart[0] = minVal;
         
         for (int i = 1; i < intvl; i++) {
-            intvlPart[i] = intvlPart[i-1] +  jumpVal;
+            intvlPart[i] = intvlPart[i-1] +  length;
         }
         
         return intvlPart;
@@ -186,7 +272,7 @@ public class Controller {
        medianIntvl = new double[intvl];
         
         for (int i = 0; i < intvl; i++) {
-            medianIntvl[i] = intvlPart[i] + (jumpVal/2);
+            medianIntvl[i] = intvlPart[i] + (length/2);
         }
         
         return medianIntvl;
@@ -196,7 +282,7 @@ public class Controller {
         int fuzLing = 0;
         
         for (int j = 0; j < intvl; j++) {
-            if (value >= intvlPart[j] && value <= intvlPart[j] + jumpVal){
+            if (value >= intvlPart[j] && value <= intvlPart[j] + length){
                fuzLing = j+1;
             }
         }
@@ -208,7 +294,7 @@ public class Controller {
         
         for (int i = 0; i < (listWorking.size()); i++) {
             for (int j = 0; j < intvl; j++) {
-                if (listWorking.get(i) >= intvlPart[j] && listWorking.get(i) <= intvlPart[j] + jumpVal){
+                if (listWorking.get(i) >= intvlPart[j] && listWorking.get(i) <= intvlPart[j] + length){
                     listFuzzify.add(j+1);
                 }
             }
@@ -261,14 +347,14 @@ public class Controller {
     
     private double adjust(double temp, int i) {
         double dt1 = 0;
-        double dt2 = (jumpVal/2)*(listFuzzify.get(i) - listFuzzify.get(i-1));
+        double dt2 = (length/2)*(listFuzzify.get(i) - listFuzzify.get(i-1));
 
             if (matrix[listFuzzify.get(i-1)-1][listFuzzify.get(i-1)-1]  > 0 && listFuzzify.get(i) != listFuzzify.get(i-1)) {
                 if (listFuzzify.get(i) > listFuzzify.get(i-1)) {
-                    dt1 = jumpVal/2;
+                    dt1 = length/2;
                 }
                else {  
-                    dt1 = -(jumpVal/2);
+                    dt1 = -(length/2);
                 }
             }
 
@@ -278,15 +364,15 @@ public class Controller {
     
     private double adjust_12(double temp, int i) {
         double dt1 = 0;
-        double dt2 = (jumpVal/2)*(i - listFuzzify.get(listFuzzify.size()-1));
+        double dt2 = (length/2)*(i - listFuzzify.get(listFuzzify.size()-1));
         int x = listFuzzify.size()-1;
        
         if (i != listFuzzify.get(x) && matrix[listFuzzify.get(x)-1][listFuzzify.get(x)-1]  > 0) {
             if (i > listFuzzify.get(x)) {
-                dt1 = jumpVal/2;
+                dt1 = length/2;
             }
            else {  
-                dt1 = -(jumpVal/2);
+                dt1 = -(length/2);
             }
         }
         temp = temp + dt1 + dt2;
@@ -365,9 +451,15 @@ public class Controller {
                 if (center > maxVal || center < minVal) {
                     listFuzzify.clear();
                     listWorking.add(listWorking.size(), val);
+                    
+                    if (this.choice == 1) {
+                        this.length = length_dbl();
+                    }else{
+                        this.length = length_abl();
+                    }
+                    
                     this.maxVal = getMaxValue();
                     this.minVal = getMinValue();
-                    this.jumpVal = getLompatan();
                     this.intvlPart = intervalPartition();
                     this.medianIntvl = getMedianInterval();
                     this.listFuzzify = fuzzifikasi();
@@ -414,6 +506,11 @@ public class Controller {
     public String getPredict(){
         String listOut = "";
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        
+//        for (LocalDate date = listDateChart.get(listDate.size()-1); date.isBefore(date.plusYears(1)); date = date.plusMonths(1))
+//        {
+//            System.out.println(date);
+//        }
         
         for (int i = 0; i < 12; i++) {
                         listOut = listOut + "\n" + (i+1) + ") " + decimalFormat.format(list_12.get(i)) ;
