@@ -134,9 +134,7 @@ public class Home extends JFrame {
                 mapePanel.setText(controller.mapeDefuzzy());
                 
                 detailPanel.setText("Interval: " + interval + "\n" + "\n" +
-                        "Prediction: || Actual: " + controller.getPredict() + "\n" + "\n" +
-                                     "Prediction MAPE (%) : "  + controller.mapePredict() + "\n" + "\n" 
-                                     
+                        "Prediction: || Actual: " + controller.getPredict() + "\n" + "\n"             
                         );
                 
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
