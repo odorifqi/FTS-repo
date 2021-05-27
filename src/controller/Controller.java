@@ -259,9 +259,9 @@ public class Controller {
         for (int i = 1; i < dataFuzzifikasi.size(); i++) {
             if (checkMatrix(dataFuzzifikasi.get(i-1).getIndex()) == true) {
                 tempHasil = medianInterval[dataFuzzifikasi.get(i).getIndex()-1];
-                arrayData.set(i, new DataModel(listStringDate.get(i), listRaw.get(i),adjust(tempHasil, i)));
+                arrayData.set(i, new DataModel(listStringDate.get(i), listRaw.get(i), tempHasil));
                 arrayPre.set(i, new DataModel(listRaw.get(i), listStringDate.get(i), tempHasil));
-                listPredict.set(i, adjust(tempHasil, i));
+                listPredict.set(i, tempHasil);
                 tempHasil = 0;
             }
             else{
