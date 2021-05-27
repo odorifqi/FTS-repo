@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import model.DataModel;
@@ -30,10 +31,9 @@ public class Controller {
     private List<String> listDate = new ArrayList<String>();
     private List<Double> listActual = new ArrayList<Double>();
     private List<Double> listDefuzzy = new ArrayList<Double>();
-    private List<Double> list_12 = new ArrayList<Double>();
+    private List<Double> listPredict = new ArrayList<Double>();
     private List<Double> listWorking = new ArrayList<Double>();
     private List<Integer> listFuzzify = new ArrayList<Integer>();
-    
     private List<Double> listDif = new ArrayList<Double>();
     private int intvl;
     private double maxVal;
@@ -45,8 +45,9 @@ public class Controller {
     private double[] temp;
     private double[] medianIntvl;
     private Double base;
-    
     private int choice;
+    
+    private List<Date> listDate12 = new ArrayList<Date>();
       
     public Controller(){}
     public List<Date> getListDateChart() {return listDateChart;}
@@ -62,6 +63,7 @@ public class Controller {
         String csvSplit = ";";
         int iter = 0;
         int x = 0;
+        DateFormat parser = new SimpleDateFormat("MM/yy");
 
         TableData.clear();
         listDateChart.clear();
@@ -82,7 +84,7 @@ public class Controller {
                 }
                 String[] text = line.split(csvSplit);  
                 
-                DateFormat parser = new SimpleDateFormat("MM/yy");
+                
                 Date date = parser.parse(text[0]);
                 double tempInt = (double) Double.parseDouble(text[1]);
 
@@ -107,7 +109,6 @@ public class Controller {
     }  
 
     public void prediksi(String choice){  
-//        this.intvl = interval;
         listDefuzzy.clear();
         listFuzzify.clear();
         listWorking.clear();
@@ -137,7 +138,7 @@ public class Controller {
         predict_12();
     }
     
-    public int length_dbl(){
+    private int length_dbl(){
         Double totalDif = 0.0;
         Double base = 0.0;
         
@@ -167,8 +168,7 @@ public class Controller {
         this.base = base;
         int baseDist = (int) (base*10);
         int count = 0;
-        do {            
-            
+        do {
             baseDist -= base;
             for (int i = 0; i < listDif.size(); i++) {
                 if (baseDist < listDif.get(i)) {
@@ -177,11 +177,10 @@ public class Controller {
             }
         } while (count < (listDif.size()/2));
         
-//        length = baseDist;
         return baseDist;
     }
     
-    public int length_abl(){
+    private int length_abl(){
         Double totalDif = 0.0;
         Double base = 0.0;
         
@@ -209,7 +208,7 @@ public class Controller {
             base = 1000.0;
         }
         this.base = base;
-        //        length = baseDist;
+
         return (int) (Math.round(avg/base)*base);
     }
    
@@ -242,7 +241,6 @@ public class Controller {
     
     public int getInterval(){
         Double tempIntvl = (maxVal - minVal)/length;
-//        this.intvl = (int) Math.ceil(tempIntvl);
         
         return (int) Math.ceil(tempIntvl) ;
     }
@@ -412,8 +410,8 @@ public class Controller {
         listDefuzzy.remove(0);
     }
     
-    public void predict_12(){
-        list_12.clear();
+    private void predict_12(){
+        listPredict.clear();
         double tempHasil = 0;
         double center = 0;
 
@@ -422,7 +420,7 @@ public class Controller {
             if (temp[listFuzzify.get( listFuzzify.size()-1)-1] == 0){
                 tempHasil = medianIntvl[listFuzzify.get( listFuzzify.size()-1)-1];
 
-                list_12.add(i, tempHasil);
+                listPredict.add(i, tempHasil);
                 listWorking.add(tempHasil);
                 listFuzzify.add(getFuzzy(tempHasil));   
             }else  if (checkMatrix(listFuzzify.get( listFuzzify.size()-1)) == true){
@@ -432,7 +430,7 @@ public class Controller {
                     }
                 }
 
-                list_12.add(i, tempHasil);
+                listPredict.add(i, tempHasil);
                 listWorking.add(tempHasil);
                 listFuzzify.add(getFuzzy(tempHasil)); 
             }else{
@@ -471,7 +469,7 @@ public class Controller {
                     val =  adjust_12(center, listFuzzify.get( listFuzzify.size()-1));
                  }
                 
-                     list_12.add(i, val);
+                     listPredict.add(i, val);
                      listWorking.add(val);
                      listFuzzify.add(getFuzzy(val));
             }    
@@ -503,17 +501,16 @@ public class Controller {
         return mape;
     }
     
-    public String getPredict(){
+    public String getPredict() throws ParseException{
         String listOut = "";
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        
-//        for (LocalDate date = listDateChart.get(listDate.size()-1); date.isBefore(date.plusYears(1)); date = date.plusMonths(1))
-//        {
-//            System.out.println(date);
-//        }
-        
+        DateFormat dateSet = new SimpleDateFormat("MM/yy");
+        Calendar cStart = Calendar.getInstance();   
+        cStart.setTime(dateSet.parse(listDate.get(listDate.size()-1)));
+           
         for (int i = 0; i < 12; i++) {
-                        listOut = listOut + "\n" + (i+1) + ") " + decimalFormat.format(list_12.get(i)) ;
+            cStart.add(Calendar.MONTH, 1);
+            listOut = listOut + "\n" + dateSet.format(cStart.getTime()) + ") " + decimalFormat.format(listPredict.get(i)) ;
         }
 
          return listOut;

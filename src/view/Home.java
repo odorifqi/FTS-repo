@@ -17,6 +17,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -136,9 +138,13 @@ public class Home extends JFrame {
                 
                 mapePanel.setText(controller.mapeDefuzzy());
                 
-                predictPanel.setText(
-                        "Prediction result: " + controller.getPredict() + "\n" + "\n"             
-                        );
+                try {
+                    predictPanel.setText(
+                            "Prediction result: " + controller.getPredict() + "\n" + "\n"
+                    );
+                } catch (ParseException ex) {
+                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
                 detailPanel.setText("Interval length method: " + choice + "\n" + "\n" +
                         "Max Value: " + Double.toString(controller.getMaxValue()) + "\n" + "\n" +
