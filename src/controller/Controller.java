@@ -45,17 +45,13 @@ public class Controller {
     private double[] medianIntvl;
     private Double base;
     private int choice;
-    
-    private List<Date> listDate12 = new ArrayList<Date>();
-      
+          
     public Controller(){}
     public List<Date> getListDateChart() {return listDateChart;}
     public List<Double> getListActualChart() {return listActualChart;}
     public List<Double> getListDefuzzy() {return listDefuzzy;}
     public ArrayList<DataModel> getTableData(){return TableData;}
-    public int getLength(){
-        return length;
-    }
+    public int getLength(){ return length;}
     
     public void inputFile(File file) throws ParseException, IOException {
         String line = "";
