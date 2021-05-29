@@ -13,7 +13,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -249,7 +248,7 @@ public class Controller {
         String intvlOut = "";
         DecimalFormat decimalFormat = new DecimalFormat("0.000");
         for (int i = 0; i < intvl; i++) {
-            intvlOut = intvlOut + "\n" + "[ " + decimalFormat.format(intvlPart[i]) + " - " + decimalFormat.format(intvlPart[i] + length) + " ]";
+            intvlOut = intvlOut + "\n" + "U" + (i+1) + " =  [ " + decimalFormat.format(intvlPart[i]) + " - " + decimalFormat.format(intvlPart[i] + length) + " ]";
         }
         
         return intvlOut;  
@@ -384,7 +383,7 @@ public class Controller {
         
         TableData.add(0, new DataModel(listDate.get(0), listActual.get(0), 0.0));
         listDefuzzy.add(0, 0.0);
-        
+  
         for (int i = 1; i < listFuzzify.size(); i++) {
             if (checkMatrix(listFuzzify.get(i-1)) == true) {
                 tempHasil = medianIntvl[listFuzzify.get(i)-1];
