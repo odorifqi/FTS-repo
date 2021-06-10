@@ -19,7 +19,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
@@ -29,7 +28,7 @@ import javax.swing.border.Border;
  * @author Odorifqi
  */
 public class PredictDialog extends JDialog {
-    private JRadioButton dbl, abl, int15, int20;
+    private JRadioButton dbl, abl;
     private ButtonGroup intervalBG;
     private JButton okButton, cancelButton;
     

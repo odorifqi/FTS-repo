@@ -19,7 +19,7 @@ import model.DataModel;
  */
 public class TablePanel extends JPanel{
     private JTable table;
-    private TableModel tableModel = new TableModel();
+    private TableModel tableModel;
   
     public TablePanel() {
         Dimension dim = getSize();

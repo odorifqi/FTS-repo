@@ -5,13 +5,12 @@
  */
 package model;
 
-import java.io.Serializable;
 
 /**
  *
  * @author Odorifqi
  */
-public class DataModel implements Serializable {
+public class DataModel  {
     private double price;
     private String time;
     private double predicted;
@@ -31,3 +30,7 @@ public class DataModel implements Serializable {
     public double getPrice() {return price;}
     public String getTime() {return time;}
 }
+
+
+//import java.io.Serializable;
+//implements Serializable
