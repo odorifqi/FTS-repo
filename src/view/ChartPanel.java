@@ -34,6 +34,7 @@ public class ChartPanel extends JPanel {
     private XYSeries series2;
     private XChartPanel<XYChart> chartBox;
 
+    //konstruktor kelas
     public ChartPanel() {
         chart = new XYChartBuilder().width(400).height(250).title("Line Chart").xAxisTitle("Time (Month)").yAxisTitle("Price (Point)").build();
         chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.GREY));
@@ -62,6 +63,7 @@ public class ChartPanel extends JPanel {
         chart.getStyler().setYAxisTickMarkSpacingHint(50);
     }
     
+    //fungsi untuk menampilkan grafik kosong
     public XChartPanel<XYChart> EmptyChart(){
         chart.setTitle("Defuzzy Chart");
         removeSeries();
@@ -73,6 +75,7 @@ public class ChartPanel extends JPanel {
         return chartBox;
     }
     
+    //fungsi untuk menampilkan grafik data mentah
     public XChartPanel<XYChart> RawChart(List<Date> listDate, List<Double> listDouble, File file ){
         chart.setTitle("" + file);
         removeSeries();
@@ -86,6 +89,7 @@ public class ChartPanel extends JPanel {
         return chartBox;
     }
     
+    //fungsi untuk menampilkan grafik data mentah dan hasil defuzzifikasi
     public XChartPanel<XYChart> DefuzzyChart(List<Date> listDate, List<Double> listDouble, List<Double> listPredict, File file){
         chart.setTitle("" + file);
         removeSeries();
@@ -107,11 +111,13 @@ public class ChartPanel extends JPanel {
         return chartBox;
     }
     
+    //fungsi untuk menghapus data grafik
     public void removeSeries(){
         chart.removeSeries("Actual Data");
         chart.removeSeries("Defuzzy Data");
     }
     
+    //fungsi untuk mengatur garis grafik
     public void setSeries1(){
         series1.setLineColor(XChartSeriesColors.BLUE);
         series1.setMarkerColor(Color.WHITE);

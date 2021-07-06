@@ -19,7 +19,7 @@ public class Teskripsi {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // fungsi untuk memulai menjalankan perangkat lunak
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

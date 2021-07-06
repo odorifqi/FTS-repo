@@ -34,10 +34,12 @@ public class PredictDialog extends JDialog {
     
     private String choice;
     
+    //konstruktor kelas
     public PredictDialog(JFrame parent) {
         super(parent, "Set interval", true);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         
+        //fungsi untuk membuat komponen
         dbl = new JRadioButton("Distribution-Based");
         abl = new JRadioButton("Average-Based");
         intervalBG = new ButtonGroup();
@@ -72,6 +74,7 @@ public class PredictDialog extends JDialog {
         setLocationRelativeTo(parent);
     }
     
+    //fungsi untuk mengatur tata letak komponen
     private void layoutControl(){
         JPanel controlsPanel = new JPanel();
         JPanel buttonsPanel = new JPanel();

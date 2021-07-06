@@ -15,6 +15,7 @@ public class DataModel  {
     private String time;
     private double predicted;
 
+    //konstruktor kelas dengan variabel data yang dibutuhkan
     public DataModel(String time, double price) {
         this.price = price;
         this.time = time;
@@ -26,11 +27,8 @@ public class DataModel  {
         this.predicted = predicted;
     }
 
+    //Fungsi get untuk mengambil data menuju keluar kelas
     public double getPredicted() {return predicted;}
     public double getPrice() {return price;}
     public String getTime() {return time;}
 }
-
-
-//import java.io.Serializable;
-//implements Serializable

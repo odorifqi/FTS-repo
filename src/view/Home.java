@@ -44,8 +44,10 @@ public class Home extends JFrame {
     private PredictPanel predictPanel = new PredictPanel();
     private JTabbedPane tabPane;
     
+    //konstruktor kelas
     public Home(){
         super("Aplikasi Prediksi Fuzzy Time Series Ruey Chyn Tsaur");
+        //untuk mengatur tata letak halaman utama
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
         
@@ -89,6 +91,7 @@ public class Home extends JFrame {
         setVisible(true);
     }
     
+    //fungsi untuk membuat tombol di halaman utama
     private JPanel createButton(){
         JPanel buttonPanel= new JPanel();
         input = new JButton("Input");
@@ -171,6 +174,7 @@ public class Home extends JFrame {
         return buttonPanel;
     }
     
+    //fungsi untuk melakukan reset sistem pada tombol "reset"
     private void reset(){
         chartPanel.removeAll();
         chartPanel.add(cp.EmptyChart());

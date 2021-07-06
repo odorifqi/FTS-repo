@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 public class MapePanel extends JPanel{
     private JTextField mape;
     
+    //konstruktor kelas
     public MapePanel(){
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEtchedBorder());
@@ -29,6 +30,7 @@ public class MapePanel extends JPanel{
         add(mape);
     }
     
+    //fungsi set untuk menerima input
     public void setText(String mapeVal){
         mape.setText(" " + mapeVal);
     }

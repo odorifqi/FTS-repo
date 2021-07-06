@@ -13,9 +13,10 @@ import javax.swing.filechooser.FileFilter;
  * @author Odorifqi
  */
 public class DataFileFilter extends FileFilter {
+    
+    //fungsi untuk memeriksa ekstensi file yang diinput
     @Override
     public boolean accept(File file) {
-        
         if (file.isDirectory()) {
             return true;
         }
@@ -34,11 +35,13 @@ public class DataFileFilter extends FileFilter {
         return false;
     }
 
+    //fungsi untuk memberi keterangan ekstensi file yang bisa diinput
     @Override
     public String getDescription() {
         return "csv files (*.csv)";
     }
     
+    //fungsi untuk mengambil ekstensi file yang telah diinput
     public static String getExtension(String name) {
         int pointIndex  = name.lastIndexOf('.');
 

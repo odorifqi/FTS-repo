@@ -47,12 +47,15 @@ public class Controller {
     private int choice;
           
     public Controller(){}
+    
+    //Fungsi get untuk mengambil data menuju keluar kelas
     public List<Date> getListDateChart() {return listDateChart;}
     public List<Double> getListActualChart() {return listActualChart;}
     public List<Double> getListDefuzzy() {return listDefuzzy;}
     public ArrayList<DataModel> getTableData(){return TableData;}
     public int getLength(){ return length;}
     
+    //Fungsi untuk menginput data dari file .csv
     public void inputFile(File file) throws ParseException, IOException {
         String line = "";
         String csvSplit = ";";
@@ -60,12 +63,10 @@ public class Controller {
         int x = 0;
         DateFormat parser = new SimpleDateFormat("MM/yy");
 
-        TableData.clear();
+       TableData.clear();
         listDateChart.clear();
         listActual.clear();
-        
         listWorking.clear();
-        
         listActualChart.clear();
         listDefuzzy.clear();
         listDate.clear();
@@ -77,9 +78,7 @@ public class Controller {
                     iter++;
                     continue;
                 }
-                String[] text = line.split(csvSplit);  
-                
-                
+                String[] text = line.split(csvSplit);
                 Date date = parser.parse(text[0]);
                 double tempInt = (double) Double.parseDouble(text[1]);
 
@@ -89,20 +88,20 @@ public class Controller {
                 listDateChart.add(date);
                 listActualChart.add(tempInt); 
                 x++;
-            }  
-
+            }
         } catch (IOException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         } br.close();
 
-            listDateChart.remove(0); 
-            listActualChart.remove(0);
+         listDateChart.remove(0); 
+         listActualChart.remove(0);
 
         for (int i = 0; i < x; i++) {
                 TableData.add(new DataModel(listDate.get(i), listActual.get(i)));
         }
     }  
 
+    //Fungsi untuk melakukan proses prediksi
     public void prediksi(String choice){  
         listDefuzzy.clear();
         listFuzzify.clear();
@@ -133,6 +132,7 @@ public class Controller {
         predict_12();
     }
     
+    //Fungsi untuk melakukan metode Distribution-Based Length
     private int length_dbl(){
         Double totalDif = 0.0;
         Double base = 0.0;
@@ -175,6 +175,7 @@ public class Controller {
         return baseDist;
     }
     
+    //Fungsi untuk melakukan metode Average-Based Length
     private int length_abl(){
         Double totalDif = 0.0;
         Double base = 0.0;
@@ -207,6 +208,7 @@ public class Controller {
         return (int) (Math.round(avg/base)*base);
     }
    
+    //Fungsi untuk mencari data terbesar
     public double getMaxValue(){
         double max = Integer.MIN_VALUE;
         for (int i = 0; i < (listWorking.size()); i++) {
@@ -221,6 +223,7 @@ public class Controller {
         return maxVal;
     }
     
+    //Fungsi untuk mencari data terkecil
     public double getMinValue(){
         double min = Integer.MAX_VALUE;
         for (int i = 0; i < (listWorking.size()); i++) {
@@ -234,22 +237,14 @@ public class Controller {
         return minVal;
     }
     
+    //Fungsi untuk mencari jumlah interval
     public int getInterval(){
         Double tempIntvl = (maxVal - minVal)/length;
         
         return (int) Math.ceil(tempIntvl) ;
     }
     
-    public String getIntervalPart(){
-        String intvlOut = "";
-        DecimalFormat decimalFormat = new DecimalFormat("0.000");
-        for (int i = 0; i < intvl; i++) {
-            intvlOut = intvlOut + "\n" + "U" + (i+1) + " =  [ " + decimalFormat.format(intvlPart[i]) + " - " + decimalFormat.format(intvlPart[i] + length) + " ]";
-        }
-        
-        return intvlOut;  
-    }
-    
+    //Fungsi untuk menentukan pembagian interval
     private double[] intervalPartition(){
         intvlPart = new double[intvl];
         intvlPart[0] = minVal;
@@ -261,6 +256,7 @@ public class Controller {
         return intvlPart;
     }
     
+    //Fungsi untuk menentukan median interval
     private double[] getMedianInterval(){ 
        medianIntvl = new double[intvl];
         
@@ -271,6 +267,7 @@ public class Controller {
         return medianIntvl;
     }
     
+    //Fungsi untuk melakukan fuzzifikasi pada data hasil prediksi
     private int getFuzzy(double value){
         int fuzLing = 0;
         
@@ -283,8 +280,8 @@ public class Controller {
         return fuzLing;
     }
     
+    //Fungsi untuk melakukan fuzzifikasi pada data mentah
     private List fuzzifikasi(){
-        
         for (int i = 0; i < (listWorking.size()); i++) {
             for (int j = 0; j < intvl; j++) {
                 if (listWorking.get(i) >= intvlPart[j] && listWorking.get(i) <= intvlPart[j] + length){
@@ -295,6 +292,7 @@ public class Controller {
         return listFuzzify;
     }
      
+    //Fungsi untuk menentukan FLR
     private int[][] fuzzyLogRel(){
         flr = new int[intvl][intvl];
         
@@ -305,6 +303,7 @@ public class Controller {
         return flr;
     }
      
+    //Fungsi untuk menentukan FLRG dan membuat matriks probabilitas
     private double[][] matrixProb(){
         matrix = new double[intvl][intvl];
         temp = new double[intvl];
@@ -328,6 +327,7 @@ public class Controller {
         return matrix;
     } 
     
+    //Fungsi untuk menentukan data one-to-one
     private boolean checkMatrix(int x) {
         for (int i = 0; i < intvl; i++) {
             if (matrix[x-1][i] == 1) {
@@ -338,6 +338,7 @@ public class Controller {
         return false;
     }
     
+    //Fungsi untuk melakukan adjust hasil defuzzifikasi
     private double adjust(double temp, int i) {
         double dt1 = 0;
         double dt2 = (length/2)*(listFuzzify.get(i) - listFuzzify.get(i-1));
@@ -355,6 +356,7 @@ public class Controller {
         return temp;
     }
     
+    //Fungsi untuk melakukan adjust hasil prediksi
     private double adjust_12(double temp, int i) {
         double dt1 = 0;
         double dt2 = (length/2)*(i - listFuzzify.get(listFuzzify.size()-1));
@@ -373,6 +375,7 @@ public class Controller {
         return temp;
     }
     
+    //Fungsi untuk melakukan defuzzifikasi data mentah
     private void defuzzifikasi() {
         double tempHasil = 0;
         listDefuzzy.clear();
@@ -405,6 +408,7 @@ public class Controller {
         listDefuzzy.remove(0);
     }
     
+    //Fungsi untuk melakukan prediksi untuk satu tahun ke depan
     private void predict_12(){
         listPredict.clear();
         double tempHasil = 0;
@@ -483,6 +487,7 @@ public class Controller {
         }
     }
     
+    //Fungsi untuk menghitung dan mengambil nilai MAPE
     public String mapeDefuzzy(){
         double temp = 0;
         String mape;
@@ -496,6 +501,7 @@ public class Controller {
         return mape;
     }
     
+    //Fungsi get untuk mengambil hasil prediksi
     public String getPredict() throws ParseException{
         String listOut = "";
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -509,5 +515,16 @@ public class Controller {
         }
 
          return listOut;
+    }
+    
+    //Fungsi get untuk mengambil hasil pembagian interval
+    public String getIntervalPart(){
+        String intvlOut = "";
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
+        for (int i = 0; i < intvl; i++) {
+            intvlOut = intvlOut + "\n" + "U" + (i+1) + " =  [ " + decimalFormat.format(intvlPart[i]) + " - " + decimalFormat.format(intvlPart[i] + length) + " ]";
+        }
+        
+        return intvlOut;  
     }
 }

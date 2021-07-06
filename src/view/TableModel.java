@@ -18,14 +18,17 @@ public class TableModel extends AbstractTableModel{
     private ArrayList<DataModel> list;
     private String[] colnames = {"Time", "Price", "Defuzzy"};
 
+    //fungsi set untuk menerima input
     public void setData(ArrayList<DataModel> list) {
         this.list = list;
     }
     
+    //fungsi untuk melakukan reset data
     public void resetData() {
         list.clear();
     }
     
+    //fungsi untuk mengatur baris dan kolom
     @Override
     public int getRowCount() {
         return list.size();
@@ -36,6 +39,7 @@ public class TableModel extends AbstractTableModel{
         return 3;
     }
     
+    //fungsi get untuk mengambil nilai
     @Override
     public Object getValueAt(int row, int col) {
         DataModel dataModel = list.get(row);
@@ -56,6 +60,7 @@ public class TableModel extends AbstractTableModel{
        return null;
     }
     
+    //fungsi get untuk mengambil nama kolom
     @Override
     public String getColumnName(int column) {
         return colnames[column];

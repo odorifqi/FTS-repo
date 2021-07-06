@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 public class PredictPanel extends JPanel {
     private JTextArea textArea;
 
+    //konstruktor kelas
     public PredictPanel() {
         textArea = new JTextArea();
         textArea.setFont(new Font("Consolas", Font.PLAIN, 12));
@@ -29,6 +30,7 @@ public class PredictPanel extends JPanel {
         add(new JScrollPane(textArea), BorderLayout.CENTER);
     }
     
+    //fungsi set untuk menerima input
     public void setText(String text){
         textArea.setText(text);
     }

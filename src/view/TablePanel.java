@@ -21,6 +21,7 @@ public class TablePanel extends JPanel{
     private JTable table;
     private TableModel tableModel;
   
+    //konstruktor kelas
     public TablePanel() {
         Dimension dim = getSize();
         dim.width = 180;
@@ -33,14 +34,17 @@ public class TablePanel extends JPanel{
         add(new JScrollPane(table), BorderLayout.CENTER); 
     }
     
+    //fungsi set untuk menerima input
     public void setData(ArrayList<DataModel> rdm){
         tableModel.setData(rdm);
     }
     
+    //fungsi untuk menjalankan reset data
     public void resetData(){
         tableModel.resetData(); 
     }
     
+    //fungsi untuk melakukan refresh jika terjadi perubahan data
     public void refresh(){
         tableModel.fireTableDataChanged();  
     }
